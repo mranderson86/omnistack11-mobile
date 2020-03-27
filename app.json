@@ -1,17 +1,20 @@
 {
-  "name": "frontMobile",
-  "displayName": "frontMobile",
+  "name": "bethehero",
+  "displayName": "Be The Hero",
   "expo": {
-    "name": "frontMobile",
-    "slug": "frontMobile",
+    "name": "Be The Hero",
+    "slug": "bethehero",
     "privacy": "unlisted",
     "sdkVersion": "36.0.0",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ]
+    "platforms": ["ios", "android", "web"],
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E02041"
+    }
   }
 }
