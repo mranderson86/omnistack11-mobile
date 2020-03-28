@@ -11,7 +11,9 @@ import styles from "./styles";
 export default function Incidents() {
   const [incidents, setIncidents] = useState({
     list: [],
-    count: 0
+    total: 0,
+    page: 1,
+    loading: false
   });
   const navigation = useNavigation();
 
@@ -21,12 +23,28 @@ export default function Incidents() {
 
   async function loadIncidents() {
     try {
-      const response = await api.get("/incidents");
+      if (incidents.loading) {
+        return;
+      }
+
+      if (incidents.total > 0 && incidents.list.length == incidents.total) {
+        return;
+      }
+
+      setIncidents({ ...incidents, loading: true });
+
+      const response = await api.get("/incidents", {
+        params: { page: incidents.page }
+      });
 
       if (response.data) {
+        const data = [...incidents.list, ...response.data];
+
         setIncidents({
-          list: response.data,
-          count: response.headers["x-total-count"]
+          list: data,
+          total: response.headers["x-total-count"],
+          page: incidents.page + 1,
+          loading: false
         });
       }
     } catch (error) {
@@ -44,7 +62,7 @@ export default function Incidents() {
         <Image source={logoImg} />
         <Text style={styles.headerText}>
           Total de{" "}
-          <Text style={styles.headerTextBold}>{incidents.count} casos</Text>.
+          <Text style={styles.headerTextBold}>{incidents.total} casos</Text>.
         </Text>
       </View>
 
@@ -58,6 +76,8 @@ export default function Incidents() {
         showsVerticalScrollIndicator={false}
         keyExtractor={incident => String(incident.id)}
         data={incidents.list}
+        onEndReached={loadIncidents}
+        onEndReachedThreshold={0.2}
         renderItem={({ item }) => (
           <View style={styles.incident}>
             <Text style={styles.incidentProperty}>ONG:</Text>
